@@ -2,7 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
-public class CombineMesh : MonoBehaviour
+public class combineMesh : MonoBehaviour
 {
     void Awake()
     {
