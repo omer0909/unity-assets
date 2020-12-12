@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer))]
 public class CombineMesh : MonoBehaviour
 {
-    void Start()
+    void Awake()
     {
         Vector3 oldPosition=transform.position;
         Quaternion oldRotation=transform.rotation;
