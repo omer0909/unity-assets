@@ -15,19 +15,18 @@ public class CombineMesh : MonoBehaviour
         MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
         CombineInstance[] combine = new CombineInstance[meshFilters.Length];
 
-        int i = 0;
+        int i = 1;
         while (i < meshFilters.Length)
         {
             combine[i].mesh = meshFilters[i].sharedMesh;
             combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
-            meshFilters[i].gameObject.SetActive(false);
+            Destroy(meshFilters[i].gameObject);
             
             i++;
         }
         transform.GetComponent<MeshFilter>().mesh = new Mesh();
         //transform.GetComponent<MeshFilter>().mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
-        transform.gameObject.SetActive(true);
 
         transform.position=oldPosition;
         transform.rotation=oldRotation;
