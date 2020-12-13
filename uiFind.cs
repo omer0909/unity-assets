@@ -9,8 +9,6 @@ public class uiFind : MonoBehaviour
     private Sprite arrow,point;
     bool view=false;
     public Transform target;
-    //public Transform arrow;
-    //public Transform point;
     [SerializeField]
     private float margin=60;
     private Vector2 screeenSize=new Vector2(Screen.width,Screen.height);
