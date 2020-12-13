@@ -1,10 +1,10 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class vertexPaint : MonoBehaviour
 {
-    public Color color;
+    public Color32 color;
     private Vector2 oldMousePos;
     public float size=0.4f;
     public float spacing=100;
@@ -31,15 +31,15 @@ public class vertexPaint : MonoBehaviour
 
     void point(Vector3 pos){
         Vector3[] vertices=mesh.vertices;
-        Color[] colors=mesh.colors;
+        Color32[] colors=mesh.colors32;
 
         for(int v=0;v<vertices.Length;v++){
             float distance =Vector3.Distance(vertices[v],pos);
             if(distance < size){
-                colors[v]=Vector4.Lerp(colors[v],color,curve.Evaluate((1-(distance/size))));
+                colors[v]=Color32.Lerp(colors[v],color,curve.Evaluate((1-(distance/size))));
             }
         }
-        mesh.colors=colors;
+        mesh.colors32=colors;
     }
     
     void Update()
