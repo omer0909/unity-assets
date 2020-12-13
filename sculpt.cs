@@ -32,31 +32,11 @@ public class sculpt : MonoBehaviour
         for(int v=0;v<vertices.Length;v++){
             float distance =Vector3.Distance(vertices[v],pos);
             if(distance < size){
-                //vertices[v]=vertices[v]+ray.direction*Time.deltaTime*force*curve.Evaluate((1-(distance/size)));
-                //vertices[v]=vertices[v]+mesh.normals[v]*Time.deltaTime*force*curve.Evaluate((1-(distance/size)));
                 vertices[v]=vertices[v]+normal*force*size*curve.Evaluate((1-(distance/size)));
             }
         }
         mesh.vertices=vertices;
     }
-    Vector3 bestNormal(Vector3 pos){
-
-        float distance= 9999;
-        Vector3 bNormal=new Vector3(0,0,0);
-        Vector3[] vertices=mesh.vertices;
-        Vector3[] mNormals=mesh.normals;
-
-        for (int v=0;v<vertices.Length;v++){
-            float d=Vector3.Distance(vertices[v],pos);
-            if(d<distance){
-                distance=d;
-                bNormal=mNormals[v];
-            }
-        }
-
-        return bNormal;
-    }
-    
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.LeftControl)){
@@ -72,7 +52,7 @@ public class sculpt : MonoBehaviour
             Ray ray=Camera.main.ScreenPointToRay(oldMousePos);
             RaycastHit hit;
             if(Physics.Raycast(ray,out hit)){       
-                point(hit.point,bestNormal(hit.point));
+                point(hit.point,hit.normal);
                 mesh.RecalculateNormals();
                 mCollider.sharedMesh=mesh;
             }
@@ -87,9 +67,8 @@ public class sculpt : MonoBehaviour
                     Ray ray=Camera.main.ScreenPointToRay(oldMousePos);
                     RaycastHit hit;
                     if(Physics.Raycast(ray,out hit)){
-                        point(hit.point,bestNormal(hit.point));
+                        point(hit.point,hit.normal);
                     }
-                    //oldMousePos=(Vector2.Distance(mousepos,oldMousePos)>size*50)?mousepos:oldMousePos;
 
                 }else{
                     mesh.RecalculateNormals();
