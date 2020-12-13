@@ -18,6 +18,7 @@ public class uiFind : MonoBehaviour
     private Image image;
     Vector2 half;
     void Awake(){
+        //margin=margin*0.002f*screeenSize.y;
         image=GetComponent<Image>();
         image.sprite=arrow;
         Vector2 a=new Vector2(screeenSize.y-margin*2,screeenSize.x-margin*2);
