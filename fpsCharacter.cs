@@ -16,15 +16,19 @@ public class fpsCharacter : MonoBehaviour
      private CharacterController charachter;
      private Transform fpsCamera;
      private void Awake() {
-         if (jumpForce.length==0){
+        if (jumpForce.length==0){
             jumpForce = new AnimationCurve(new Keyframe(0, 1), new Keyframe(1, 0));
             jumpForce.preWrapMode = WrapMode.PingPong;
             jumpForce.postWrapMode = WrapMode.PingPong;
-         }
-        
+        }
+
+        if(GetComponent<CharacterController>()){
+            charachter=GetComponent<CharacterController>();
+        }else{
+            charachter = gameObject.AddComponent<CharacterController>();
+        }
         
          Cursor.visible=false;
-         charachter=GetComponent<CharacterController>();
          fpsCamera=Camera.main.transform;
          charachter.slopeLimit=90;
      }
