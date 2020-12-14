@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class fpsCharachter : MonoBehaviour
+public class fpsCharacter : MonoBehaviour
 {
     
     private bool ground=false;
