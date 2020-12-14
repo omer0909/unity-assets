@@ -62,7 +62,7 @@ public class vertexPaint : MonoBehaviour
             Vector2 mousedelta=mousepos-oldMousePos;
 
             Transform camera=Camera.main.transform;
-            Vector3 mouseMove=camera.up*mousedelta.y+camera.right*mousedelta.x;
+            Vector3 mouseMove=camera.right*mousedelta.x+camera.up*mousedelta.y;
             mouseMove.Normalize();
 
             while(true){
