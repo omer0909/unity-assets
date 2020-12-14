@@ -11,6 +11,10 @@ public class meshPoint : MonoBehaviour
     private int index=0;
     void Awake()
     {
+        if(15000<maxIndex){
+            Debug.LogError("maxIndex cannot be greater than 1500");
+        }
+        
         if(!GetComponent<MeshRenderer>()){
             MeshRenderer meshRenderer =gameObject.AddComponent<MeshRenderer>();
             meshRenderer.sharedMaterial = new Material(Shader.Find("Standard"));
