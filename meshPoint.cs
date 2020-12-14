@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class meshPoint : MonoBehaviour
 {
-    MeshFilter meshFilter;
+    private MeshFilter meshFilter;
     public float size=0.1f;
     public int maxIndex=15000;
     public float margin=0.01f;
