@@ -73,7 +73,6 @@ public class vertexPaint : MonoBehaviour
                     RaycastHit hit;
                     if(Physics.Raycast(ray,out hit)){
                         slope=1-Mathf.Abs(Vector3.Dot(hit.normal,mouseMove));
-                        Debug.Log(slope);
                         point(hit.point);
                     }
 
