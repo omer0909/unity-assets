@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +8,7 @@ public class sculpt : MonoBehaviour
     public float size=0.4f;
     public float force=0.1f;
     public float spacing=100;
+    private float slope=1;
     public AnimationCurve curve;
     Mesh mesh;
     MeshCollider mCollider;
@@ -60,22 +61,31 @@ public class sculpt : MonoBehaviour
 
         if (Input.GetMouseButton(0)){
             Vector2 mousepos=Input.mousePosition;
+            Vector2 mousedelta=mousepos-oldMousePos;
+
+            Transform camera=Camera.main.transform;
+            Vector3 mouseMove=camera.right*mousedelta.x+camera.up*mousedelta.y;
+            mouseMove.Normalize();
+            
             while(true){
                 if(Vector2.Distance(mousepos,oldMousePos)>size*spacing){
-                    oldMousePos=Vector2.MoveTowards(oldMousePos,mousepos,size*spacing);
+                    oldMousePos=Vector2.MoveTowards(oldMousePos,mousepos,size*spacing*slope);
                     
                     Ray ray=Camera.main.ScreenPointToRay(oldMousePos);
                     RaycastHit hit;
                     if(Physics.Raycast(ray,out hit)){
+                        slope=1-Mathf.Abs(Vector3.Dot(hit.normal,mouseMove));
                         point(hit.point,hit.normal);
                     }
 
                 }else{
                     mesh.RecalculateNormals();
-                    mCollider.sharedMesh=mesh;
                     break;
                 }
             }  
+        }
+        if(Input.GetMouseButtonUp(0)){
+            mCollider.sharedMesh=mesh;
         }
     }
 }
