@@ -25,7 +25,8 @@ public class fpsCharacter : MonoBehaviour
         }
         
         charachter=GetComponent<CharacterController>();
-        
+
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible=false;
         fpsCamera=Camera.main.transform;
         charachter.slopeLimit=90;
