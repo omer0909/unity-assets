@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-
 public class fpsCharacter : MonoBehaviour
 {
     
@@ -17,19 +16,21 @@ public class fpsCharacter : MonoBehaviour
      public float cameraSensivity=3;
      private CharacterController charachter;
      private Transform fpsCamera;
+     private bool jumping=false;
+     public Vector2 moveInput=Vector2.zero;
      private void Awake() {
          if (jumpForce.length==0){
             jumpForce = new AnimationCurve(new Keyframe(0, 1), new Keyframe(1, 0));
             jumpForce.preWrapMode = WrapMode.PingPong;
             jumpForce.postWrapMode = WrapMode.PingPong;
         }
-        
+
         charachter=GetComponent<CharacterController>();
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible=false;
         fpsCamera=Camera.main.transform;
-        charachter.slopeLimit=90;
+        charachter.minMoveDistance=0;
      }
     private void cameraDirection(){
         Vector2 cameraOld=fpsCamera.eulerAngles;
@@ -39,17 +40,39 @@ public class fpsCharacter : MonoBehaviour
             fpsCamera.eulerAngles=new Vector2(Mathf.Clamp(Mathf.DeltaAngle(0,cameraOld.x-Input.GetAxis("Mouse Y")*cameraSensivity),-90,90), cameraOld.y+Input.GetAxis("Mouse X")*cameraSensivity);
         }
     }
+    void isInput(){
+        if(Input.GetKey(KeyCode.W)&&Input.GetKey(KeyCode.S)){
+            moveInput.y=0;
+        }else if(Input.GetKey(KeyCode.W)){
+            moveInput.y=1;
+        }else if(Input.GetKey(KeyCode.S)){
+            moveInput.y=-1;
+        }else{
+            moveInput.y=0;
+        }
+
+        if(Input.GetKey(KeyCode.D)&&Input.GetKey(KeyCode.A)){
+            moveInput.x=0;
+        }else if(Input.GetKey(KeyCode.D)){
+            moveInput.x=1;
+        }else if(Input.GetKey(KeyCode.A)){
+            moveInput.x=-1;
+        }else{
+            moveInput.x=0;
+        }
+    }
 
     private void move(){
 
         float speed=(Input.GetKey(KeyCode.LeftShift)||Input.GetKey(KeyCode.RightShift))? runSpeed: walkSpeed;
         Vector2 direction=new Vector2(Mathf.Sin(fpsCamera.eulerAngles.y*0.0174532925f),Mathf.Cos(fpsCamera.eulerAngles.y*0.0174532925f));
-        Vector2 input=new Vector2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical"));
-        Vector2 control=(1<input.magnitude)?input.normalized:input;
+        Vector2 control=(1<moveInput.magnitude)?moveInput.normalized:moveInput;
 
         Vector2 x=control.y*direction;
         Vector2 y=-control.x*new Vector2(-direction.y,direction.x);
-        Vector3 go=(x+y)*speed;
+        Vector2 go=(x+y)*speed;
+        Vector2 velocity=new Vector2(charachter.velocity.x,charachter.velocity.z);
+        go=Vector2.MoveTowards(velocity,go,30*Time.deltaTime);
 
         if(ground){
             charachter.SimpleMove(new Vector3(go.x,-go.magnitude,go.y));
@@ -65,19 +88,23 @@ public class fpsCharacter : MonoBehaviour
     
     private IEnumerator JumpEvent(){
         float jumptime=0;
-        bool jumping=false;
-        do{
-            charachter.Move(Vector3.up*jumpMultiply*jumpForce.Evaluate(jumptime)*Time.deltaTime);
-            jumptime+=Time.deltaTime;
-
-            if(ground==false&&jumping==false){
-                jumping=true;
-            }else if(ground&&jumping){
-                jumptime=1;
-            }
-            
-            yield return null;
-        }while(jumptime<1f);
+        bool jumpingup=false;
+        charachter.slopeLimit=90;
+        if(!jumping){
+            jumping=true;
+            do{
+                if(ground==false&&jumpingup==false){
+                    jumpingup=true;
+                }else if(ground&&jumpingup){
+                    break;
+                }
+                jumptime+=Time.deltaTime;
+                charachter.Move(Vector3.up*jumpMultiply*jumpForce.Evaluate(jumptime)*Time.deltaTime);
+                yield return null;
+            }while(jumptime<1f);
+        }
+        charachter.slopeLimit=45;
+        jumping=false;
     }
     
     private void isGround(){
@@ -88,6 +115,7 @@ public class fpsCharacter : MonoBehaviour
     {
         isGround();
         cameraDirection();
+        isInput();
         move();
         jump();
     }
