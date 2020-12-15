@@ -1,6 +1,9 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+[RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(MeshFilter))]
 
 public class meshPoint : MonoBehaviour
 {
@@ -15,18 +18,9 @@ public class meshPoint : MonoBehaviour
             Debug.LogError("maxIndex cannot be greater than 1500");
         }
         
-        if(!GetComponent<MeshRenderer>()){
-            MeshRenderer meshRenderer =gameObject.AddComponent<MeshRenderer>();
-            meshRenderer.sharedMaterial = new Material(Shader.Find("Standard"));
-        }
-
-        if(GetComponent<MeshFilter>()){
-            meshFilter = GetComponent<MeshFilter>();
-        }else{
-            meshFilter = gameObject.AddComponent<MeshFilter>();
-        }
-
+        meshFilter = GetComponent<MeshFilter>();
         meshFilter.mesh=new Mesh();
+
     }
     void createmesh(Vector3 pos,Vector3 normal){
         Mesh mesh=new Mesh();
