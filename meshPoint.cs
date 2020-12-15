@@ -9,6 +9,7 @@ public class meshPoint : MonoBehaviour
 {
     private MeshFilter meshFilter;
     public float size=0.1f;
+    [Range(1,15000)]
     public int maxIndex=15000;
     public float margin=0.01f;
     private int index=0;
