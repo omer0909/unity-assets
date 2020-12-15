@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(MeshCollider))]
+
 public class vertexPaint : MonoBehaviour
 {
     public Color32 color;
@@ -18,13 +22,11 @@ public class vertexPaint : MonoBehaviour
             curve.preWrapMode = WrapMode.PingPong;
             curve.postWrapMode = WrapMode.PingPong;
         }
-    }
-    
-    void Start()
-    {
+
         mesh=GetComponent<MeshFilter>().mesh;
-        mCollider=gameObject.AddComponent<MeshCollider>();
+        mCollider=GetComponent<MeshCollider>();
         mCollider.sharedMesh=mesh;
+        
         if(mesh.colors.Length==0){
             mesh.colors=new Color[mesh.vertices.Length];
         }
