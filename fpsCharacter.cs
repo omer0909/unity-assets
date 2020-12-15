@@ -7,6 +7,7 @@ public class fpsCharacter : MonoBehaviour
 {
     
     private bool ground=false;
+    private bool ceiling=false;
     [SerializeField]
     private AnimationCurve jumpForce;
     public float jumpMultiply=5;
@@ -31,6 +32,7 @@ public class fpsCharacter : MonoBehaviour
         Cursor.visible=false;
         fpsCamera=Camera.main.transform;
         charachter.minMoveDistance=0;
+        charachter.slopeLimit=90;
      }
     private void cameraDirection(){
         Vector2 cameraOld=fpsCamera.eulerAngles;
@@ -89,10 +91,13 @@ public class fpsCharacter : MonoBehaviour
     private IEnumerator JumpEvent(){
         float jumptime=0;
         bool jumpingup=false;
-        charachter.slopeLimit=90;
+
         if(!jumping){
             jumping=true;
             do{
+                if(ceiling){
+                    break;
+                }
                 if(ground==false&&jumpingup==false){
                     jumpingup=true;
                 }else if(ground&&jumpingup){
@@ -103,13 +108,14 @@ public class fpsCharacter : MonoBehaviour
                 yield return null;
             }while(jumptime<1f);
         }
-        charachter.slopeLimit=45;
+
         jumping=false;
     }
     
     private void isGround(){
         RaycastHit hit;
         ground=(charachter.isGrounded||Physics.Raycast( transform.position,Vector3.down,out hit,0.1f+charachter.height*0.5f));
+        ceiling=(Physics.Raycast( transform.position,Vector3.up,out hit,0.1f+charachter.height*0.5f));
     }
     void Update()
     {
@@ -119,4 +125,4 @@ public class fpsCharacter : MonoBehaviour
         move();
         jump();
     }
-    }
+}
