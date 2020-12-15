@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
+[RequireComponent(typeof(CanvasRenderer))]
+[RequireComponent(typeof(Image))]
+
 public class uiFind : MonoBehaviour
 {
     [SerializeField]
