@@ -84,7 +84,6 @@ public class voxelMesh : MonoBehaviour
                 if(hit.normal==Vector3.back){
                     edit(new Vector3Int(Mathf.RoundToInt(hit.point.x),Mathf.RoundToInt(hit.point.y),Mathf.CeilToInt(hit.point.z)));
                 }
-                createMesh();
             }
         }
     }
