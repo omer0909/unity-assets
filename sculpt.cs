@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(MeshCollider))]
+
 public class sculpt : MonoBehaviour
 {
     private Vector2 oldMousePos;
@@ -18,15 +22,11 @@ public class sculpt : MonoBehaviour
             curve.preWrapMode = WrapMode.PingPong;
             curve.postWrapMode = WrapMode.PingPong;
         }
-    }
-    
-    void Start()
-    {
         mesh=GetComponent<MeshFilter>().mesh;
-        mCollider=gameObject.AddComponent<MeshCollider>();
+        mCollider=GetComponent<MeshCollider>();
         mCollider.sharedMesh=mesh;
     }
-
+    
     void point(Vector3 pos,Vector3 normal){
         Vector3[] vertices=mesh.vertices;
                     
