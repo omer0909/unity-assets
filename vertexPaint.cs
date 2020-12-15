@@ -14,8 +14,8 @@ public class vertexPaint : MonoBehaviour
     public float spacing=100;
     private float slope=1;
     public AnimationCurve curve;
-    Mesh mesh;
-    MeshCollider mCollider;
+    private Mesh mesh;
+    private MeshCollider mCollider;
     void Awake() {
         if (curve.length==0){
             curve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
