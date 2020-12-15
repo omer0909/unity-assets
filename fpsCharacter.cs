@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))]
 public class fpsCharacter : MonoBehaviour
 {
     
@@ -22,11 +23,8 @@ public class fpsCharacter : MonoBehaviour
             jumpForce.postWrapMode = WrapMode.PingPong;
         }
 
-        if(GetComponent<CharacterController>()){
-            charachter=GetComponent<CharacterController>();
-        }else{
-            charachter = gameObject.AddComponent<CharacterController>();
-        }
+        charachter=GetComponent<CharacterController>();
+
         
          Cursor.visible=false;
          fpsCamera=Camera.main.transform;
@@ -43,7 +41,7 @@ public class fpsCharacter : MonoBehaviour
 
     private void move(){
 
-       float speed=(Input.GetKey(KeyCode.LeftShift)||Input.GetKey(KeyCode.RightShift))? runSpeed: walkSpeed;
+        float speed=(Input.GetKey(KeyCode.LeftShift)||Input.GetKey(KeyCode.RightShift))? runSpeed: walkSpeed;
         Vector2 direction=new Vector2(Mathf.Sin(fpsCamera.eulerAngles.y*0.0174532925f),Mathf.Cos(fpsCamera.eulerAngles.y*0.0174532925f));
         Vector2 input=new Vector2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical"));
         Vector2 control=(1<input.magnitude)?input.normalized:input;
@@ -84,7 +82,6 @@ public class fpsCharacter : MonoBehaviour
     private void isGround(){
         RaycastHit hit;
         ground=(charachter.isGrounded||Physics.Raycast( transform.position,Vector3.down,out hit,0.1f+charachter.height*0.5f));
-        Debug.Log(charachter.isGrounded);
     }
     void Update()
     {
