@@ -23,13 +23,12 @@ public class fpsCharacter : MonoBehaviour
             jumpForce.preWrapMode = WrapMode.PingPong;
             jumpForce.postWrapMode = WrapMode.PingPong;
         }
-
-        charachter=GetComponent<CharacterController>();
-
         
-         Cursor.visible=false;
-         fpsCamera=Camera.main.transform;
-         charachter.slopeLimit=90;
+        charachter=GetComponent<CharacterController>();
+        
+        Cursor.visible=false;
+        fpsCamera=Camera.main.transform;
+        charachter.slopeLimit=90;
      }
     private void cameraDirection(){
         Vector2 cameraOld=fpsCamera.eulerAngles;
