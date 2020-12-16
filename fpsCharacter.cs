@@ -5,11 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class fpsCharacter : MonoBehaviour
 {
-    
+    private float velocity=0;
     private bool ground=false;
     private bool ceiling=false;
-    [SerializeField]
-    private AnimationCurve jumpForce;
     public float jumpMultiply=5;
     public bool invertY=false;
      public float walkSpeed=5;
@@ -17,14 +15,8 @@ public class fpsCharacter : MonoBehaviour
      public float cameraSensivity=3;
      private CharacterController charachter;
      private Transform fpsCamera;
-     private bool jumping=false;
      public Vector2 moveInput=Vector2.zero;
      private void Awake() {
-         if (jumpForce.length==0){
-            jumpForce = new AnimationCurve(new Keyframe(0, 1), new Keyframe(1, 0));
-            jumpForce.preWrapMode = WrapMode.PingPong;
-            jumpForce.postWrapMode = WrapMode.PingPong;
-        }
 
         charachter=GetComponent<CharacterController>();
 
@@ -32,7 +24,6 @@ public class fpsCharacter : MonoBehaviour
         Cursor.visible=false;
         fpsCamera=Camera.main.transform;
         charachter.minMoveDistance=0;
-        charachter.slopeLimit=90;
      }
     private void cameraDirection(){
         Vector2 cameraOld=fpsCamera.eulerAngles;
@@ -63,58 +54,45 @@ public class fpsCharacter : MonoBehaviour
             moveInput.x=0;
         }
     }
+    void physics(){
+
+        if(ground&&velocity<0){
+            velocity=0;
+        }
+        if(ceiling&&velocity>0){
+            velocity=0;
+        }
+        velocity-=Time.deltaTime*10;
+    }
 
     private void move(){
 
         float speed=(Input.GetKey(KeyCode.LeftShift)||Input.GetKey(KeyCode.RightShift))? runSpeed: walkSpeed;
-        Vector2 direction=new Vector2(Mathf.Sin(fpsCamera.eulerAngles.y*0.0174532925f),Mathf.Cos(fpsCamera.eulerAngles.y*0.0174532925f));
+        Vector2 direction=new Vector2(Mathf.Sin(fpsCamera.eulerAngles.y*Mathf.Deg2Rad),Mathf.Cos(fpsCamera.eulerAngles.y*Mathf.Deg2Rad));
         Vector2 control=(1<moveInput.magnitude)?moveInput.normalized:moveInput;
 
         Vector2 x=control.y*direction;
         Vector2 y=-control.x*new Vector2(-direction.y,direction.x);
         Vector2 go=(x+y)*speed;
-        Vector2 velocity=new Vector2(charachter.velocity.x,charachter.velocity.z);
-        go=Vector2.MoveTowards(velocity,go,30*Time.deltaTime);
+        Vector2 horizontalV=new Vector2(charachter.velocity.x,charachter.velocity.z);
 
-        if(ground){
-            charachter.SimpleMove(new Vector3(go.x,-go.magnitude,go.y));
+        if(ground&&velocity<=0){
+            go=Vector2.MoveTowards(horizontalV,go,30*Time.deltaTime);
+            charachter.Move(new Vector3(go.x,-go.magnitude-0.1f,go.y)*Time.deltaTime);
         }else{
-            charachter.SimpleMove(new Vector3(go.x,0,go.y));
+            go=Vector2.MoveTowards(horizontalV,go,5*Time.deltaTime);
+            charachter.Move(new Vector3(go.x,velocity,go.y)*Time.deltaTime);
         }
     }
     void jump(){
         if(Input.GetKeyDown(KeyCode.Space)&&ground){
-            StartCoroutine(JumpEvent());
+            velocity=jumpMultiply;
         }
-    }
-    
-    private IEnumerator JumpEvent(){
-        float jumptime=0;
-        bool jumpingup=false;
-
-        if(!jumping){
-            jumping=true;
-            do{
-                if(ceiling){
-                    break;
-                }
-                if(ground==false&&jumpingup==false){
-                    jumpingup=true;
-                }else if(ground&&jumpingup){
-                    break;
-                }
-                jumptime+=Time.deltaTime;
-                charachter.Move(Vector3.up*jumpMultiply*jumpForce.Evaluate(jumptime)*Time.deltaTime);
-                yield return null;
-            }while(jumptime<1f);
-        }
-
-        jumping=false;
     }
     
     private void isGround(){
+        ground=charachter.isGrounded;
         RaycastHit hit;
-        ground=(charachter.isGrounded||Physics.Raycast( transform.position,Vector3.down,out hit,0.1f+charachter.height*0.5f));
         ceiling=(Physics.Raycast( transform.position,Vector3.up,out hit,0.1f+charachter.height*0.5f));
     }
     void Update()
@@ -122,7 +100,8 @@ public class fpsCharacter : MonoBehaviour
         isGround();
         cameraDirection();
         isInput();
-        move();
         jump();
+        physics();
+        move();
     }
 }
