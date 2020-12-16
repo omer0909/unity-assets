@@ -7,86 +7,50 @@ using UnityEngine;
 
 public class voxelMesh : MonoBehaviour
 {
-    private Vector3Int Size=new Vector3Int(50,50,50);
+    public Vector3Int size;
     public int[,,] cubes;
     private MeshFilter meshFilter;
     private MeshCollider meshCollider;
     private List<int> tris=new List<int>();
     private List<Vector3> normals=new List<Vector3>();
     private List<Vector2> uvs=new List<Vector2>();
+    public voxelMesh rightM,leftM,forwardM,backM;
     private int index=0;
-    bool add=true;
+    private float bigDetailMultiplay=0.005f;
+    private float detailMultiplay=0.025f;
+    private float detailHeightMultiplay=40;
+    private int mapHeight=10;
+
 
     void Awake()
     {
-        cubes=new int[Size.x,Size.y,Size.z];
+        size=new Vector3Int(editVoxel.size,editVoxel.height,editVoxel.size);
+
+        cubes=new int[size.x,size.y,size.z];
 
         meshFilter = GetComponent<MeshFilter>();
 
         meshCollider = GetComponent<MeshCollider>();
 
+        for (int x=0;x<size.x;x++){
+            for (int y=0;y<size.y;y++){
+                for (int z=0;z<size.z;z++){
 
-        cubes[Size.x/2,Size.x/2,Size.x/2]=1;
-        transform.Translate(-Size/2);
+                    float bigDetail=Mathf.PerlinNoise((x+transform.position.x-99999)*bigDetailMultiplay,(z+transform.position.z-99999)*bigDetailMultiplay);
 
+                    int maxHeight=Mathf.FloorToInt(Mathf.PerlinNoise((x+transform.position.x-99999)*detailMultiplay,(z+transform.position.z-99999)*detailMultiplay)*detailHeightMultiplay*bigDetail);
 
-        createMesh();
+                    if(y<=maxHeight+mapHeight){
+                        cubes[x,y,z]=1;
+                    }
+                    
 
-    }
-    void edit(Vector3Int pos){
-        if(pos.x>0 && pos.x<Size.x-1 && pos.y>0 && pos.y<Size.y-1 && pos.z>0 && pos.z<Size.z-1){
-            if(add){
-                cubes[pos.x,pos.y,pos.z]=1;
-            }else{
-                cubes[pos.x,pos.y,pos.z]=0;
+                }
             }
         }
         createMesh();
     }
     
-    void Update()
-    {
-        if(Input.GetKey(KeyCode.LeftControl)){
-            add=false;
-        }else{
-            add=true;
-        }
-
-        if(Input.GetMouseButtonDown(0)){
-            RaycastHit hit;
-            Ray ray=Camera.main.ScreenPointToRay(Input.mousePosition);
-            if(Physics.Raycast(ray,out hit)){
-                if(add){
-                    hit.normal=hit.normal*-1;
-                }
-                hit.point=hit.point-transform.position;
-                //right
-                if(hit.normal==Vector3.right){
-                    edit(new Vector3Int(Mathf.FloorToInt(hit.point.x),Mathf.RoundToInt(hit.point.y),Mathf.RoundToInt(hit.point.z)));
-                }
-                //left
-                if(hit.normal==Vector3.left){
-                    edit(new Vector3Int(Mathf.CeilToInt(hit.point.x),Mathf.RoundToInt(hit.point.y),Mathf.RoundToInt(hit.point.z)));
-                }
-                //up
-                if(hit.normal==Vector3.up){
-                    edit(new Vector3Int(Mathf.RoundToInt(hit.point.x),Mathf.FloorToInt(hit.point.y),Mathf.RoundToInt(hit.point.z)));
-                }
-                //down
-                if(hit.normal==Vector3.down){
-                    edit(new Vector3Int(Mathf.RoundToInt(hit.point.x),Mathf.CeilToInt(hit.point.y),Mathf.RoundToInt(hit.point.z)));
-                }
-                //forward
-                if(hit.normal==Vector3.forward){
-                    edit(new Vector3Int(Mathf.RoundToInt(hit.point.x),Mathf.RoundToInt(hit.point.y),Mathf.FloorToInt(hit.point.z)));
-                }
-                //back
-                if(hit.normal==Vector3.back){
-                    edit(new Vector3Int(Mathf.RoundToInt(hit.point.x),Mathf.RoundToInt(hit.point.y),Mathf.CeilToInt(hit.point.z)));
-                }
-            }
-        }
-    }
     void createFace(Vector3 normal){
         int[] trisA={
             index+0,index+1,index+2,
@@ -116,20 +80,27 @@ public class voxelMesh : MonoBehaviour
         
         List<Vector3> vertices=new List<Vector3>();
 
-        for (int x=0;x<Size.x;x++){
-            for (int y=0;y<Size.y;y++){
-                for (int z=0;z<Size.z;z++){
+        for (int x=0;x<size.x;x++){
+            for (int y=0;y<size.y;y++){
+                for (int z=0;z<size.z;z++){
                     if(cubes[x,y,z]!=0){
                         
                         //right
                         bool right=false;
-                        if(x!=Size.x-1){
+                        if(x!=size.x-1){
                             if(cubes[x+1,y,z]==0){
                                 right=true;
                             }
+                        }else if(rightM!=null){
+                                right=rightM.cubes[0,y,z]==0;
+
                         }else{
-                            right=true;
+                            float bigDetail=Mathf.PerlinNoise((x+1+transform.position.x-99999)*bigDetailMultiplay,(z+transform.position.z-99999)*bigDetailMultiplay);
+                            int maxHeight=Mathf.FloorToInt(Mathf.PerlinNoise((x+1+transform.position.x-99999)*detailMultiplay,(z+transform.position.z-99999)*detailMultiplay)*detailHeightMultiplay*bigDetail);
+                            right=y>maxHeight+mapHeight;
+
                         }
+                        
 
                         //left
                         bool left=false;
@@ -137,13 +108,18 @@ public class voxelMesh : MonoBehaviour
                             if(cubes[x-1,y,z]==0){
                                 left=true;
                             }
+                        }else if(leftM!=null){
+                            left=leftM.cubes[size.x-1,y,z]==0;
+
                         }else{
-                            left=true;
+                            float bigDetail=Mathf.PerlinNoise((x-1+transform.position.x-99999)*bigDetailMultiplay,(z+transform.position.z-99999)*bigDetailMultiplay);
+                            int maxHeight=Mathf.FloorToInt(Mathf.PerlinNoise((x-1+transform.position.x-99999)*detailMultiplay,(z+transform.position.z-99999)*detailMultiplay)*detailHeightMultiplay*bigDetail);
+                            left=y>maxHeight+mapHeight;
                         }
 
                         //up
                         bool up=false;
-                        if(y!=Size.y-1){
+                        if(y!=size.y-1){
                             if(cubes[x,y+1,z]==0){
                                 up=true;
                             }
@@ -157,18 +133,21 @@ public class voxelMesh : MonoBehaviour
                             if(cubes[x,y-1,z]==0){
                                 down=true;
                             }
-                        }else{
-                            down=true;
                         }
 
                         //forward
                         bool forward=false;
-                        if(z!=Size.z-1){
+                        if(z!=size.z-1){
                             if(cubes[x,y,z+1]==0){
                                 forward=true;
                             }
+                        }else if(forwardM!=null){
+                            forward=forwardM.cubes[x,y,0]==0;
+
                         }else{
-                            forward=true;
+                            float bigDetail=Mathf.PerlinNoise((x+transform.position.x-99999)*bigDetailMultiplay,(z+1+transform.position.z-99999)*bigDetailMultiplay);
+                            int maxHeight=Mathf.FloorToInt(Mathf.PerlinNoise((x+transform.position.x-99999)*detailMultiplay,(z+1+transform.position.z-99999)*detailMultiplay)*detailHeightMultiplay*bigDetail);
+                            forward=y>maxHeight+mapHeight;
                         }
 
                         //back
@@ -177,8 +156,13 @@ public class voxelMesh : MonoBehaviour
                             if(cubes[x,y,z-1]==0){
                                 back=true;
                             }
+                        }else if(backM!=null){
+                            back=backM.cubes[x,y,size.z-1]==0;
+
                         }else{
-                            back=true;
+                            float bigDetail=Mathf.PerlinNoise((x+transform.position.x-99999)*bigDetailMultiplay,(z-1+transform.position.z-99999)*bigDetailMultiplay);
+                            int maxHeight=Mathf.FloorToInt(Mathf.PerlinNoise((x+transform.position.x-99999)*detailMultiplay,(z-1+transform.position.z-99999)*detailMultiplay)*detailHeightMultiplay*bigDetail);
+                            back=y>maxHeight+mapHeight;
                         }
 
 
@@ -252,7 +236,7 @@ public class voxelMesh : MonoBehaviour
                 }
             }
         }
-
+        
         mesh.vertices=vertices.ToArray();
         mesh.normals=normals.ToArray();
         mesh.uv=uvs.ToArray();
@@ -264,6 +248,5 @@ public class voxelMesh : MonoBehaviour
         tris.Clear();
         normals.Clear();
         uvs.Clear();
-
     }
 }
