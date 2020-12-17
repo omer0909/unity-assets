@@ -72,7 +72,7 @@ public class fpsCharacter : MonoBehaviour
 
         float speed=(Input.GetKey(KeyCode.LeftShift)||Input.GetKey(KeyCode.RightShift))? runSpeed: walkSpeed;
         Vector2 direction=new Vector2(Mathf.Sin(fpsCamera.eulerAngles.y*Mathf.Deg2Rad),Mathf.Cos(fpsCamera.eulerAngles.y*Mathf.Deg2Rad));
-        Vector2 control=(1<moveInput.magnitude)?moveInput.normalized:moveInput;
+        Vector2 control=Vector2.ClampMagnitude(moveInput,1);
 
         Vector2 x=control.y*direction;
         Vector2 y=-control.x*new Vector2(-direction.y,direction.x);
