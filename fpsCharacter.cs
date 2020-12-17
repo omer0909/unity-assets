@@ -16,6 +16,7 @@ public class fpsCharacter : MonoBehaviour
      private CharacterController charachter;
      private Transform fpsCamera;
      public Vector2 moveInput=Vector2.zero;
+     public Vector2 cameraInput=Vector2.zero;
      private void Awake() {
 
         charachter=GetComponent<CharacterController>();
@@ -28,12 +29,14 @@ public class fpsCharacter : MonoBehaviour
     private void cameraDirection(){
         Vector2 cameraOld=fpsCamera.eulerAngles;
         if(invertY){
-            fpsCamera.eulerAngles=new Vector2(Mathf.Clamp(Mathf.DeltaAngle(0,cameraOld.x+Input.GetAxis("Mouse Y")*cameraSensivity),-90,90), cameraOld.y+Input.GetAxis("Mouse X")*cameraSensivity);
+            fpsCamera.eulerAngles=new Vector2(Mathf.Clamp(Mathf.DeltaAngle(0,cameraOld.x+cameraInput.y*cameraSensivity),-90,90), cameraOld.y+cameraInput.x*cameraSensivity);
         }else{
-            fpsCamera.eulerAngles=new Vector2(Mathf.Clamp(Mathf.DeltaAngle(0,cameraOld.x-Input.GetAxis("Mouse Y")*cameraSensivity),-90,90), cameraOld.y+Input.GetAxis("Mouse X")*cameraSensivity);
+            fpsCamera.eulerAngles=new Vector2(Mathf.Clamp(Mathf.DeltaAngle(0,cameraOld.x-cameraInput.y*cameraSensivity),-90,90), cameraOld.y+cameraInput.x*cameraSensivity);
         }
     }
     void isInput(){
+        cameraInput=new Vector2(Input.GetAxis("Mouse X"),Input.GetAxis("Mouse Y"));
+
         if(Input.GetKey(KeyCode.W)&&Input.GetKey(KeyCode.S)){
             moveInput.y=0;
         }else if(Input.GetKey(KeyCode.W)){
@@ -97,9 +100,9 @@ public class fpsCharacter : MonoBehaviour
     }
     void Update()
     {
+        isInput();
         isGround();
         cameraDirection();
-        isInput();
         jump();
         physics();
         move();
