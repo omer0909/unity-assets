@@ -26,7 +26,6 @@ public class fpsCharacter : MonoBehaviour
         Cursor.visible=false;
         fpsCamera=Camera.main.transform;
         charachter.minMoveDistance=0;
-        charachter.slopeLimit= 90;
     }
     private void cameraDirection(){
         Vector2 cameraOld=fpsCamera.eulerAngles;
