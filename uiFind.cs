@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
@@ -18,8 +18,10 @@ public class uiFind : MonoBehaviour
     private float rate=0;
     private Image image;
     Vector2 half;
+    private Camera cameraT;
     void Awake(){
         //margin=margin*0.002f*screeenSize.y;
+        cameraT= Camera.main;
         image=GetComponent<Image>();
         image.sprite=arrow;
         Vector2 a=new Vector2(screeenSize.y-margin*2,screeenSize.x-margin*2);
@@ -31,7 +33,7 @@ public class uiFind : MonoBehaviour
     void Update()
     {
         
-        Vector3 pos=Camera.main.WorldToScreenPoint(target.position);
+        Vector3 pos=cameraT.WorldToScreenPoint(target.position);
         if(pos.z>0){
             if(!view){
                 view=true;
