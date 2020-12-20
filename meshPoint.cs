@@ -21,7 +21,6 @@ public class meshPoint : MonoBehaviour
         
         meshFilter = GetComponent<MeshFilter>();
         meshFilter.mesh=new Mesh();
-
     }
     void createmesh(Vector3 pos,Vector3 normal){
         Mesh mesh=new Mesh();
@@ -90,30 +89,15 @@ public class meshPoint : MonoBehaviour
         meshFilter.mesh.vertices=vertices;
         meshFilter.mesh.normals=normals;
     }
+    public void create(Vector3 pos, Vector3 normal){
+        if(meshFilter.mesh.vertices.Length<maxIndex*4){
 
-    void Update()
-    {
-        if(Input.GetMouseButton(0)){
-            
-            Ray ray=Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if(Physics.Raycast( ray,out hit)){
-                
+            createmesh(pos,normal);
 
-                if(meshFilter.mesh.vertices.Length<maxIndex*4){
-
-                    createmesh(hit.point,hit.normal);
-
-                }else{
-
-                    editMesh(hit.point,hit.normal);
-                    
-                    index++;
-                    index=(index+1>maxIndex)?0:index;
-                }
-            }
-                    
+        }else{
+            editMesh(pos,normal);
+            index++;
+            index=(index+1>maxIndex)?0:index;
         }
-        
     }
 }
