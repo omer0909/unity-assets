@@ -76,7 +76,7 @@ public class sculpt : MonoBehaviour
             mouseMove.Normalize();
             
             while(true){
-                if(Vector2.Distance(mousepos,oldMousePos)>size*spacing){
+                if(Vector2.Distance(mousepos,oldMousePos)>size*spacing/distance){
                     oldMousePos=Vector2.MoveTowards(oldMousePos,mousepos,(size*spacing*slope)/distance);
                     
                     Ray ray=cam.ScreenPointToRay(oldMousePos);
