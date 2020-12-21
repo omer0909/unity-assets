@@ -16,7 +16,13 @@ public class vertexPaint : MonoBehaviour
     public AnimationCurve curve;
     private Mesh mesh;
     private MeshCollider mCollider;
+    private Camera cam;
+    private float distance;
+    float distanceMultiplay;
     void Awake() {
+        cam=Camera.main;
+        distanceMultiplay=Mathf.Sin(cam.fieldOfView*0.5f*Mathf.Deg2Rad);
+
         if (curve.length==0){
             curve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
             curve.preWrapMode = WrapMode.PingPong;
@@ -37,9 +43,9 @@ public class vertexPaint : MonoBehaviour
         Color32[] colors=mesh.colors32;
 
         for(int v=0;v<vertices.Length;v++){
-            float distance =Vector3.Distance(vertices[v],pos);
-            if(distance < size){
-                colors[v]=Color32.Lerp(colors[v],color,curve.Evaluate((1-(distance/size))));
+            float distanceV =Vector3.Distance(vertices[v],pos);
+            if(distanceV < size){
+                colors[v]=Color32.Lerp(colors[v],color,curve.Evaluate((1-(distanceV/size))));
             }
         }
         mesh.colors32=colors;
@@ -53,9 +59,9 @@ public class vertexPaint : MonoBehaviour
 
             Ray ray=Camera.main.ScreenPointToRay(oldMousePos);
             RaycastHit hit;
-            if(Physics.Raycast(ray,out hit)){       
+            if(Physics.Raycast(ray,out hit)){ 
                 point(hit.point);
-
+                distance=hit.distance*distanceMultiplay;
             }
         }
 
@@ -68,14 +74,16 @@ public class vertexPaint : MonoBehaviour
             mouseMove.Normalize();
 
             while(true){
-                if(Vector2.Distance(mousepos,oldMousePos)>size*spacing){
-                    oldMousePos=Vector2.MoveTowards(oldMousePos,mousepos,size*spacing*slope);
+                if(Vector2.Distance(mousepos,oldMousePos)>size*spacing/distance){
+                    oldMousePos=Vector2.MoveTowards(oldMousePos,mousepos,(size*spacing*slope)/distance);
                     
                     Ray ray=Camera.main.ScreenPointToRay(oldMousePos);
                     RaycastHit hit;
                     if(Physics.Raycast(ray,out hit)){
-                        slope=1-Mathf.Abs(Vector3.Dot(hit.normal,mouseMove));
+                        
+                        slope=1.3f-Mathf.Abs(Vector3.Dot(hit.normal,mouseMove));
                         point(hit.point);
+                        distance=hit.distance*distanceMultiplay;
                     }
 
                 }else{
