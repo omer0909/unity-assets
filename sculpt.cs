@@ -37,9 +37,9 @@ public class sculpt : MonoBehaviour
         Vector3[] vertices=mesh.vertices;
                     
         for(int v=0;v<vertices.Length;v++){
-            float distance =Vector3.Distance(vertices[v],pos);
-            if(distance < size){
-                vertices[v]=vertices[v]+normal*force*size*curve.Evaluate((1-(distance/size)));
+            float distanceV =Vector3.Distance(vertices[v],pos);
+            if(distanceV < size){
+                vertices[v]=vertices[v]+normal*force*size*curve.Evaluate((1-(distanceV/size)));
             }
         }
         mesh.vertices=vertices;
