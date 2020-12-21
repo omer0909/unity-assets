@@ -82,7 +82,7 @@ public class sculpt : MonoBehaviour
                     Ray ray=cam.ScreenPointToRay(oldMousePos);
                     RaycastHit hit;
                     if(Physics.Raycast(ray,out hit)){
-                        slope=1-Mathf.Abs(Vector3.Dot(hit.normal,mouseMove));
+                        slope=1.3f-Mathf.Abs(Vector3.Dot(hit.normal,mouseMove));
                         point(hit.point,hit.normal);
                         distance=hit.distance*distanceMultiplay;
                     }
