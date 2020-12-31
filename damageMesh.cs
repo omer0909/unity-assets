@@ -1,21 +1,23 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class damageMesh : MonoBehaviour
 {
-    private List<GameObject> objects=new List<GameObject>();
+    private float time;
     public float radius=0.2f;
     MeshFilter mesh;
     //MeshCollider meshCollider;
     void Awake(){
         mesh=GetComponent<MeshFilter>();
         //meshCollider=GetComponent<MeshCollider>();
+        time=Time.time;
     }
     void OnCollisionEnter(Collision collisionInfo)
     {
-        if(!objects.Contains(collisionInfo.gameObject)){
-            objects.Add(collisionInfo.gameObject);
+        if(Time.time-time>0.5f){
+            time=Time.time;
+            
             Vector3[] vertices=mesh.mesh.vertices;
             
             foreach (ContactPoint contact in collisionInfo.contacts)
