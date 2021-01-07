@@ -13,10 +13,7 @@ public class carController : MonoBehaviour
     public float angle=30;
     [SerializeField]
     private WheelCollider[] whweelColliders;
-    void Start()
-    {
-
-    }
+    
     void FixedUpdate()
     {
         
