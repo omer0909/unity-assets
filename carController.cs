@@ -19,7 +19,6 @@ public class carController : MonoBehaviour
     }
     void FixedUpdate()
     {
-        bool breake=Input.GetKey(KeyCode.Space);
         
         for(int i=0;i<whweelColliders.Length;i++){
             Vector3 pos;
