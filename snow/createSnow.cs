@@ -6,10 +6,10 @@ using UnityEngine;
 public class createSnow : MonoBehaviour
 {
     private MeshFilter meshFilter;
-    public int matrixSize=3;
-    private float size=1;
+    public int matrixSize=200;
+    private float size=30;
     private float convert;
-    public float depth=0.5f;
+    public float depth=0.2f;
     private Vector3[] vertices;
     private Vector3[] normals;
     void Awake()
