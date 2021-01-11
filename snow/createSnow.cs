@@ -7,7 +7,7 @@ public class createSnow : MonoBehaviour
 {
     private MeshFilter meshFilter;
     public int matrixSize=200;
-    private float size=30;
+    private float size=1;
     private float convert;
     public float depth=0.2f;
     private Vector3[] vertices;
