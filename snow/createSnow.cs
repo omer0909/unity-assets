@@ -20,7 +20,7 @@ public class createSnow : MonoBehaviour
 
         meshFilter=GetComponent<MeshFilter>();
         Mesh newMesh=new Mesh();
-        newMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        //newMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
         int vertexLegenth=matrixSize*matrixSize;
 
