@@ -76,7 +76,7 @@ public class mazeMesh : MonoBehaviour
                         {
                             for (int i = 0; i < 4; i++)
                             {
-                                normals.Add(Vector3.forward);
+                                normals.Add(Vector3.back);
                             }
                             Vector3[] PlaneV ={
                                 new Vector3(x+0.5f,1,y+0.5f),
@@ -106,7 +106,7 @@ public class mazeMesh : MonoBehaviour
                         {
                             for (int i = 0; i < 4; i++)
                             {
-                                normals.Add(Vector3.back);
+                                normals.Add(Vector3.forward);
                             }
                             Vector3[] PlaneV ={
                                 new Vector3(x+0.5f,1,y-0.5f),
