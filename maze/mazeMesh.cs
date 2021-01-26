@@ -47,13 +47,14 @@ public class mazeMesh : MonoBehaviour
                 index++;
             }
 
-            outPos.position = new Vector3(maxPos.x, 0, maxPos.y);
+            
 
             if (index == 0)
             {
                 break;
             }
         }
+        outPos.position = new Vector3(maxPos.x, 0, maxPos.y);
 
         Mesh newmesh = new Mesh();
 
