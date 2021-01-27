@@ -250,6 +250,9 @@ public class mazeMesh : MonoBehaviour
         newmesh.normals = normals.ToArray();
         newmesh.triangles = tris.ToArray();
         newmesh.uv = uv.ToArray();
+        
+        meshFilter.mesh.RecalculateBounds();
+        meshFilter.mesh.RecalculateTangents();
 
         GetComponent<MeshFilter>().mesh = newmesh;
         GetComponent<MeshCollider>().sharedMesh = newmesh;
