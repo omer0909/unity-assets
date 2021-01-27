@@ -259,6 +259,9 @@ public class voxelMesh : MonoBehaviour
         mesh.triangles=tris.ToArray();
         meshFilter.mesh=mesh;
         meshCollider.sharedMesh=mesh;
+        
+        meshFilter.mesh.RecalculateBounds();
+        meshFilter.mesh.RecalculateTangents();
 
         index=0;
         tris.Clear();
