@@ -8,47 +8,50 @@ using UnityEngine;
 public class meshPoint : MonoBehaviour
 {
     private MeshFilter meshFilter;
-    public float size=0.1f;
-    [Range(1,15000)]
-    public int maxIndex=15000;
-    public float margin=0.01f;
-    private int index=0;
+    public float size = 0.1f;
+    [Range(1, 15000)]
+    public int maxIndex = 15000;
+    public float margin = 0.01f;
+    private int index = 0;
     void Awake()
     {
-        if(15000<maxIndex){
+        if (15000 < maxIndex)
+        {
             Debug.LogError("maxIndex cannot be greater than 1500");
         }
-        
+
         meshFilter = GetComponent<MeshFilter>();
-        meshFilter.mesh=new Mesh();
+        meshFilter.mesh = new Mesh();
     }
-    void createmesh(Vector3 pos,Vector3 normal){
-        Mesh mesh=new Mesh();
-        Vector3[] vertices={
+    void createmesh(Vector3 pos, Vector3 normal)
+    {
+        Mesh mesh = new Mesh();
+        Vector3[] vertices ={
             new Vector3(-size,-size,margin),
             new Vector3(size,-size,margin),
             new Vector3(-size,size,margin),
             new Vector3(size,size,margin),
         };
-        Vector3[] normals=new Vector3[vertices.Length];
+        Vector3[] normals = new Vector3[vertices.Length];
 
-        Quaternion rotation=Quaternion.LookRotation(normal,Vector3.up);
-        for(int i=0;i<vertices.Length;i++){
-            
-            vertices[i]=rotation*vertices[i];
-            normals[i]=normal;
-            vertices[i]+=pos;
+        Quaternion rotation = Quaternion.LookRotation(normal, Vector3.up);
+        for (int i = 0; i < vertices.Length; i++)
+        {
+
+            vertices[i] = rotation * vertices[i];
+            normals[i] = normal;
+            vertices[i] += pos;
         }
 
-        mesh.vertices=vertices;
-        mesh.normals=normals;
+        mesh.vertices = vertices;
+        mesh.normals = normals;
 
         int[] tris = {
             0,1,2,
             2,1,3
         };
 
-        mesh.triangles=tris;
+        mesh.triangles = tris;
 
         Vector2[] uv = {
             new Vector2(0,0),
@@ -57,8 +60,8 @@ public class meshPoint : MonoBehaviour
             new Vector2(1,1),
         };
 
-        mesh.uv=uv;
-        
+        mesh.uv = uv;
+
         CombineInstance[] combine = new CombineInstance[2];
         combine[0].mesh = meshFilter.sharedMesh;
         combine[1].mesh = mesh;
@@ -66,38 +69,49 @@ public class meshPoint : MonoBehaviour
         combine[1].transform = transform.localToWorldMatrix;
         meshFilter.mesh = new Mesh();
         meshFilter.mesh.CombineMeshes(combine);
-        
+
+        meshFilter.mesh.RecalculateBounds();
+        meshFilter.mesh.RecalculateTangents();
+
     }
-    void editMesh(Vector3 pos,Vector3 normal){
+    void editMesh(Vector3 pos, Vector3 normal)
+    {
 
-        Vector3[] vertices=meshFilter.mesh.vertices;
-        Vector3[] normals=meshFilter.mesh.normals;
+        Vector3[] vertices = meshFilter.mesh.vertices;
+        Vector3[] normals = meshFilter.mesh.normals;
 
-        vertices[index*4]=new Vector3(-size,-size,margin);
-        vertices[index*4+1]=new Vector3(size,-size,margin);
-        vertices[index*4+2]=new Vector3(-size,size,margin);
-        vertices[index*4+3]=new Vector3(size,size,margin);
+        vertices[index * 4] = new Vector3(-size, -size, margin);
+        vertices[index * 4 + 1] = new Vector3(size, -size, margin);
+        vertices[index * 4 + 2] = new Vector3(-size, size, margin);
+        vertices[index * 4 + 3] = new Vector3(size, size, margin);
 
-        Quaternion rotation=Quaternion.LookRotation(normal,Vector3.up);
-        for(int i=0;i<4;i++){
+        Quaternion rotation = Quaternion.LookRotation(normal, Vector3.up);
+        for (int i = 0; i < 4; i++)
+        {
 
-            vertices[index*4+i]=rotation*vertices[index*4+i];
-            normals[index*4+i]=normal;
-            vertices[index*4+i]+=pos;
+            vertices[index * 4 + i] = rotation * vertices[index * 4 + i];
+            normals[index * 4 + i] = normal;
+            vertices[index * 4 + i] += pos;
         }
+        meshFilter.mesh.vertices = vertices;
+        meshFilter.mesh.normals = normals;
 
-        meshFilter.mesh.vertices=vertices;
-        meshFilter.mesh.normals=normals;
+        meshFilter.mesh.RecalculateBounds();
+        meshFilter.mesh.RecalculateTangents();
     }
-    public void create(Vector3 pos, Vector3 normal){
-        if(meshFilter.mesh.vertices.Length<maxIndex*4){
+    public void create(Vector3 pos, Vector3 normal)
+    {
+        if (meshFilter.mesh.vertices.Length < maxIndex * 4)
+        {
 
-            createmesh(pos,normal);
+            createmesh(pos, normal);
 
-        }else{
-            editMesh(pos,normal);
+        }
+        else
+        {
+            editMesh(pos, normal);
             index++;
-            index=(index+1>maxIndex)?0:index;
+            index = (index + 1 > maxIndex) ? 0 : index;
         }
     }
 }
