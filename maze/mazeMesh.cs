@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -47,7 +47,7 @@ public class mazeMesh : MonoBehaviour
                 index++;
             }
 
-            
+
 
             if (index == 0)
             {
@@ -250,11 +250,12 @@ public class mazeMesh : MonoBehaviour
         newmesh.normals = normals.ToArray();
         newmesh.triangles = tris.ToArray();
         newmesh.uv = uv.ToArray();
-        
+
+        MeshFilter meshFilter = GetComponent<MeshFilter>();
         meshFilter.mesh.RecalculateBounds();
         meshFilter.mesh.RecalculateTangents();
-
-        GetComponent<MeshFilter>().mesh = newmesh;
+        meshFilter.mesh = newmesh;
+        
         GetComponent<MeshCollider>().sharedMesh = newmesh;
 
     }
