@@ -7,7 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(MeshCollider))]
 public class mazeMesh : MonoBehaviour
 {
-    public int matrix = 32;
+    public int matrix = 29;
     bool[,] mazeWall;
     public Transform outPos;
     void Awake()
