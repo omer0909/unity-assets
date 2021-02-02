@@ -343,8 +343,4 @@ public class mazeMesh : MonoBehaviour
         }
         return result;
     }
-    void conrolWall()
-    {
-
-    }
 }
