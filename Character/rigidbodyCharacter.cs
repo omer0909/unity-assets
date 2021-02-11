@@ -30,10 +30,6 @@ public class rigidbodyCharacter : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-    void Start()
-    {
-
-    }
     private void cameraDirection()
     {
         Vector2 cameraOld = fpsCamera.eulerAngles;
