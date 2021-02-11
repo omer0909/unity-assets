@@ -14,11 +14,9 @@ public class rigidbodyCharacter : MonoBehaviour
     public float runSpeed = 60;
     public float cameraSensivity = 3;
     private Rigidbody r;
-    private float velocity = 0;
     private Transform fpsCamera;
     private Vector2 moveInput = Vector2.zero;
     private Vector2 cameraInput = Vector2.zero;
-    private Vector2 input;
     private bool jump;
     public bool isGround;
     private Vector3 ground = Vector3.up;
