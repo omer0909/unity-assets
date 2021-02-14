@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
 //Add Physics Material and set friction 0
-//Rigidbody set drag 4 and set interpolate interpolate
+//Rigidbody set drag 4 and set interpolate interpolate and constraints rotations
 public class rigidbodyCharacter : MonoBehaviour
 {
     public float jumpMultiply = 300;
@@ -17,6 +17,7 @@ public class rigidbodyCharacter : MonoBehaviour
     private Transform fpsCamera;
     private Vector2 moveInput = Vector2.zero;
     private Vector2 cameraInput = Vector2.zero;
+    private Vector2 input;
     private bool jump;
     public bool isGround;
     private Vector3 ground = Vector3.up;
@@ -122,19 +123,18 @@ public class rigidbodyCharacter : MonoBehaviour
         Vector2 y = -control.x * new Vector2(-direction.y, direction.x);
         Vector2 go = (x + y) * speed;
 
-        Quaternion moveDirection = Quaternion.FromToRotation(ground, Vector3.up);
-
-        Vector3 move = moveDirection * new Vector3(go.x, 0, go.y);
         if (isGround)
         {
             r.drag = drag;
-            r.AddForce(new Vector3(move.x, -move.y, move.z));
+            Quaternion moveDirection = Quaternion.FromToRotation(ground, Vector3.up);
+            Vector3 move = moveDirection * new Vector3(go.x, 0, go.y);
+            move = (move.y < 0) ? new Vector3(go.x * go.x / move.x, 0, go.y * go.y / move.z) : new Vector3(move.x, -move.y, move.z);
+            r.AddForce(move);
         }
         else
         {
             r.drag = 0.5f;
-            r.AddForce(new Vector3(move.x * 0.3f / drag, -move.y * 0.3f / drag, move.z * 0.3f / drag));
-            ground = Vector3.up;
+            r.AddForce(new Vector3(go.x * 0.3f / drag, 0, go.y * 0.3f / drag));
         }
 
         isGround = false;
