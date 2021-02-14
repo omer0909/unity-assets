@@ -19,7 +19,7 @@ public class rigidbodyCharacter : MonoBehaviour
     private Vector2 cameraInput = Vector2.zero;
     private Vector2 input;
     private bool jump;
-    public bool isGround;
+    private bool isGround;
     private Vector3 ground = Vector3.up;
     private float drag;
     private void Awake()
