@@ -8,19 +8,12 @@ using UnityEngine;
 //Rigidbody set drag 4 and set interpolate interpolate and constraints rotations
 public class rigidbodyCharacter : MonoBehaviour
 {
-    public float minMove = 200f;
-    public float jumpMultiply = 300;
     public bool invertY = false;
-    public float walkSpeed = 30;
-    public float runSpeed = 60;
-    public float cameraSensivity = 3;
+    public float jumpMultiply = 300, walkSpeed = 30, runSpeed = 60, cameraSensivity = 3, stopDrag = 10;
     private Rigidbody r;
     private Transform fpsCamera;
-    private Vector2 moveInput = Vector2.zero;
-    private Vector2 cameraInput = Vector2.zero;
-    private Vector2 input;
-    private bool jump;
-    private bool isGround;
+    private Vector2 moveInput, cameraInput, input;
+    private bool jump, isGround;
     private Vector3 ground = Vector3.up;
     private float drag;
     private void Awake()
@@ -108,13 +101,6 @@ public class rigidbodyCharacter : MonoBehaviour
     private void FixedUpdate()
     {
         r.useGravity = !isGround;
-        if (jump)
-        {
-            jump = false;
-            if (isGround)
-                r.AddForce(jumpMultiply * Vector3.up);
-        }
-
 
         float speed = (Input.GetKey(KeyCode.LeftShift)) ? runSpeed : walkSpeed;
         Vector2 direction = new Vector2(Mathf.Sin(fpsCamera.eulerAngles.y * Mathf.Deg2Rad), Mathf.Cos(fpsCamera.eulerAngles.y * Mathf.Deg2Rad));
@@ -126,7 +112,8 @@ public class rigidbodyCharacter : MonoBehaviour
 
         if (isGround)
         {
-            r.drag = drag;
+            r.drag = moveInput == Vector2.zero ? stopDrag : drag;
+
             Quaternion moveDirection = Quaternion.FromToRotation(ground, Vector3.up);
             Vector3 move = moveDirection * new Vector3(go.x, 0, go.y);
             move = (move.y < 0) ? new Vector3(go.x * go.x / move.x, 0, go.y * go.y / move.z) : new Vector3(move.x, -move.y, move.z);
@@ -138,9 +125,11 @@ public class rigidbodyCharacter : MonoBehaviour
             r.AddForce(new Vector3(go.x * 0.3f / drag, 0, go.y * 0.3f / drag));
         }
 
-        if ((r.velocity.magnitude / Time.fixedDeltaTime) < minMove && moveInput == Vector2.zero && isGround)
+        if (jump)
         {
-            r.velocity = Vector3.zero;
+            jump = false;
+            if (isGround)
+                r.AddForce(jumpMultiply * Vector3.up);
         }
 
         isGround = false;
