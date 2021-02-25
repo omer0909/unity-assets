@@ -8,6 +8,7 @@ using UnityEngine;
 //Rigidbody set drag 4 and set interpolate interpolate and constraints rotations
 public class rigidbodyCharacter : MonoBehaviour
 {
+    public float minMove = 200f;
     public float jumpMultiply = 300;
     public bool invertY = false;
     public float walkSpeed = 30;
@@ -135,6 +136,11 @@ public class rigidbodyCharacter : MonoBehaviour
         {
             r.drag = 0.5f;
             r.AddForce(new Vector3(go.x * 0.3f / drag, 0, go.y * 0.3f / drag));
+        }
+
+        if ((r.velocity.magnitude / Time.fixedDeltaTime) < minMove && moveInput == Vector2.zero && isGround)
+        {
+            r.velocity = Vector3.zero;
         }
 
         isGround = false;
