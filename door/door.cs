@@ -7,32 +7,26 @@ public class door : MonoBehaviour
 {
     public KeyCode doorKey;
     public UnityEvent action;
-    private bool inDoor;
+    public int inDoor;
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
-        {
-            inDoor = true;
-        }
-        if (doorKey == KeyCode.None)
+        inDoor++;
+        if (inDoor == 1 && doorKey == KeyCode.None)
         {
             action.Invoke();
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Player")
-        {
-            inDoor = false;
-        }
-        if (doorKey == KeyCode.None)
+        inDoor--;
+        if (inDoor == 0 && doorKey == KeyCode.None)
         {
             action.Invoke();
         }
     }
     private void Update()
     {
-        if (inDoor && Input.GetKeyDown(doorKey))
+        if (inDoor > 0 && Input.GetKeyDown(doorKey))
         {
             action.Invoke();
         }
