@@ -13,6 +13,14 @@ public class carController : MonoBehaviour
     public float angle=30;
     [SerializeField]
     private WheelCollider[] whweelColliders;
+    private Vector3 massCenter;
+    private Rigidbody rigidbodyA;
+
+    void Start()
+    {
+        rigidbodyA= GetComponent<Rigidbody>();
+        rigidbodyA.centerOfMass=massCenter;
+    }
     
     void FixedUpdate()
     {
