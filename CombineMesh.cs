@@ -68,7 +68,7 @@ public class CombineMesh : MonoBehaviour
         }
         for (int i = 0; i < allObjects.Length; i++)
         {
-            if (!allObjects[i].isStatic && allObjects[i].GetComponent<MeshFilter>() == null)
+            if (!allObjects[i].isStatic || allObjects[i].GetComponent<MeshFilter>() == null)
                 continue;
             chunkMeshes[GetChunk(chunks, allObjects[i])].Add(allObjects[i].GetComponent<MeshFilter>());
         }
