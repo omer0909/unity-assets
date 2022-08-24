@@ -114,10 +114,8 @@ public class CombineMesh : MonoBehaviour
                     return false;
                 }
                 int materialArrayIndex = Contains(materials, meshRenderer.sharedMaterials[s].GetHashCode());
-                Debug.Log(meshRenderer.sharedMaterials[s].GetHashCode());
                 if (materialArrayIndex == -1)
                 {
-                    Debug.Log("calisti");
                     materials.Add(meshRenderer.sharedMaterials[s]);
                     materialArrayIndex = materials.Count - 1;
                 }
