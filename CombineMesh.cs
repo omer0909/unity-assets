@@ -76,12 +76,17 @@ public class CombineMesh : MonoBehaviour
         {
             for (int j = 0; j < chunkMeshes[i].Count; j++)
                 editedList.Add(chunkMeshes[i][j].gameObject);
-            Combine(chunks[i].gameObject, chunkMeshes[i].ToArray());
+            if (!Combine(chunks[i].gameObject, chunkMeshes[i].ToArray()))
+            {
+                editedObjects = editedList.ToArray();
+                Clear();
+                return;
+            }
         }
         editedObjects = editedList.ToArray();
     }
 
-    public void Combine(GameObject chunk, MeshFilter[] meshFilters)
+    public bool Combine(GameObject chunk, MeshFilter[] meshFilters)
     {
         chunk.transform.position = Vector3.zero;
         chunk.transform.rotation = Quaternion.identity;
@@ -97,14 +102,22 @@ public class CombineMesh : MonoBehaviour
                 !meshFilter.sharedMesh ||
                 meshRenderer.sharedMaterials.Length != meshFilter.sharedMesh.subMeshCount)
             {
+                Debug.LogWarning("\"" + meshRenderer.gameObject.name + "\" warning material length!");
                 continue;
             }
 
             for (int s = 0; s < meshFilter.sharedMesh.subMeshCount; s++)
             {
-                int materialArrayIndex = Contains(materials, meshRenderer.sharedMaterials[s].name);
+                if (meshRenderer.sharedMaterials[s] == null)
+                {
+                    Debug.LogError("\"" + meshRenderer.gameObject.name + "\" have null material!");
+                    return false;
+                }
+                int materialArrayIndex = Contains(materials, meshRenderer.sharedMaterials[s].GetHashCode());
+                Debug.Log(meshRenderer.sharedMaterials[s].GetHashCode());
                 if (materialArrayIndex == -1)
                 {
+                    Debug.Log("calisti");
                     materials.Add(meshRenderer.sharedMaterials[s]);
                     materialArrayIndex = materials.Count - 1;
                 }
@@ -150,13 +163,14 @@ public class CombineMesh : MonoBehaviour
 
         foreach (MeshFilter meshFilter in meshFilters)
             meshFilter.gameObject.SetActive(false);
+        return true;
     }
 
-    private int Contains(ArrayList searchList, string searchName)
+    private int Contains(ArrayList searchList, int searchName)
     {
         for (int i = 0; i < searchList.Count; i++)
         {
-            if (((Material)searchList[i]).name == searchName)
+            if (((Material)searchList[i]).GetHashCode() == searchName)
             {
                 return i;
             }
